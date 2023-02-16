@@ -121,80 +121,6 @@ public class Matrix {
         return result;
     }
 
-    // exclude_row and exclude_col starts from 1
-    public static Matrix subMatrix(Matrix matrix, int exclude_row, int exclude_col) {
-        Matrix result = new Matrix(matrix.row - 1, matrix.col - 1);
-
-        for (int r = 0, p = 0; r < matrix.row; ++r) {
-            if (r != exclude_row - 1) {
-                for (int c = 0, q = 0; c < matrix.col; ++c) {
-                    if (c != exclude_col - 1) {
-                        result.data[p][q] = matrix.data[r][c];
-
-                        ++q;
-                    }
-                }
-
-                ++p;
-            }
-        }
-
-        return result;
-    }
-
-//    public ComplexNum determinant() {
-//        if (row != col) {
-//            return new ComplexNum(Double.NaN);
-//        }
-//        else {
-//            return _determinant(this);
-//        }
-//    }
-
-//    private ComplexNum _determinant(Matrix matrix) {
-//        if (matrix.col == 1) {
-//            return matrix.data[0][0];
-//        } else if (matrix.col == 2) {
-//            return (ComplexNum(matrix.data[0][0])  * matrix.data[1][1] -
-//                    matrix.data[0][1] * matrix.data[1][0]);
-//        } else {
-//            double result = 0.0;
-//
-//            for (int col = 0; col < matrix.col; ++col) {
-//                Matrix sub = subMatrix(matrix, 1, col + 1);
-//
-//                result += (Math.pow(-1, 1 + col + 1) *
-//                        matrix.data[0][col] * _determinant(sub));
-//            }
-//
-//            return result;
-//        }
-//    }
-
-//    public Matrix inverse() {
-//        ComplexNum det = determinant();
-//
-//        if (row != col || det == null) {
-//            return null;
-//        } else {
-//            Matrix result = new Matrix(row, col);
-//
-//            for (int r = 0; r < row; ++r) {
-//                for (int c = 0; c < col; ++c) {
-//                    Matrix sub = subMatrix(this, r + 1, c + 1);
-//                    complexNum.re = 1;
-//                    complexNum.im = 0;
-//
-//                    result.data[c][r] = (сomplexNum / det *
-//                            Math.pow(-1, r + c) *
-//                            _determinant(sub));
-//                }
-//            }
-//
-//            return result;
-//        }
-//    }
-
     public void writeMatrix(int row, int col) {
         System.out.print("[");
         for (int r = 0; r < row; ++r) {
@@ -317,8 +243,7 @@ public class Matrix {
         }
         if (num == 4) {
             pw.println("Determinant");
-            transpose(matrix1).writeMatrix(transpose(matrix1).row, transpose(matrix1).col);
-            transpose(matrix2).writeMatrix(transpose(matrix2).row, transpose(matrix2).col);
+          
         }
     }
 }
