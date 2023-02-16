@@ -202,7 +202,7 @@ public class Matrix {
                 System.out.print(" ");
             }
             for (int c = 0; c < col; ++c) {
-                complexNum.pr(this.data[r][c]);
+                System.out.printf("%.3f + %.3fi", data[r][c].re, data[r][c].im);
                 System.out.print(" ");
                 if (c != col - 1) {
                     System.out.print(" ");
@@ -211,6 +211,7 @@ public class Matrix {
             if (r == row - 1) {
                 System.out.print("]");
             }
+            System.out.print("\n");
         }
         System.out.print("\n");
     }
@@ -314,6 +315,10 @@ public class Matrix {
             transpose(matrix1).writeMatrix(transpose(matrix1).row, transpose(matrix1).col);
             transpose(matrix2).writeMatrix(transpose(matrix2).row, transpose(matrix2).col);
         }
-
+        if (num == 4) {
+            pw.println("Determinant");
+            transpose(matrix1).writeMatrix(transpose(matrix1).row, transpose(matrix1).col);
+            transpose(matrix2).writeMatrix(transpose(matrix2).row, transpose(matrix2).col);
+        }
     }
 }
