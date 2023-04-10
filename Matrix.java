@@ -12,6 +12,13 @@ public class Matrix {
 
     }
 
+    public int getRow() {
+        return this.row;
+    }
+    public int getCol() {
+        return this.col;
+    }
+
     public Matrix(int row, int col) {
         data = new ComplexNum[row][col];
         this.row = row;
@@ -23,12 +30,9 @@ public class Matrix {
         }
     }
 
-    public boolean isSquare() {
-        return row == col;
-    }
-
     /**
      * Заполнение матрицы значениями из ввода
+     *
      * @param row
      * @param col
      */
@@ -37,19 +41,17 @@ public class Matrix {
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
                 ComplexNum complexNum = new ComplexNum();
-                while (true){
+                while (true) {
                     Scanner in3 = new Scanner(System.in);
-                    try{
+                    try {
                         complexNum.re = in3.nextDouble();
-                    }
-                    catch (InputMismatchException e){
+                    } catch (InputMismatchException e) {
                         pw.println("You enter another symbol. Please, try again");
                         continue;
                     }
-                    try{
+                    try {
                         complexNum.im = in3.nextDouble();
-                    }
-                    catch (InputMismatchException e){
+                    } catch (InputMismatchException e) {
                         pw.println("You enter another symbol. Please, try again");
                         continue;
                     }
@@ -62,6 +64,7 @@ public class Matrix {
 
     /**
      * Производит сложение двух матриц
+     *
      * @param matrix1
      * @param matrix2
      * @param matrix3
@@ -83,7 +86,6 @@ public class Matrix {
     }
 
     /**
-     *
      * @param matrix1
      * @param matrix2
      * @return матрица умножения
@@ -105,7 +107,6 @@ public class Matrix {
     }
 
     /**
-     *
      * @param matrix
      * @return транспонированная матрица
      */
@@ -119,6 +120,77 @@ public class Matrix {
             }
         }
         return result;
+    }
+
+    // exclude_row and exclude_col starts from 1
+    public static Matrix subMatrix(Matrix matrix, int exclude_row, int exclude_col) {
+        Matrix result = new Matrix(matrix.row - 1, matrix.col - 1);
+
+        for (int r = 0, p = 0; r < matrix.row; ++r) {
+            if (r != exclude_row - 1) {
+                for (int c = 0, q = 0; c < matrix.col; ++c) {
+                    if (c != exclude_col - 1) {
+                        result.data[p][q] = matrix.data[r][c];
+
+                        ++q;
+                    }
+                }
+
+                ++p;
+            }
+        }
+
+        return result;
+    }
+
+    public ComplexNum determinant() throws ArrayIndexOutOfBoundsException {
+        if (row != col) {
+            throw new ArithmeticException("Невозможно найти детерминант");
+        } else {
+            return _determinant(this);
+        }
+    }
+
+    private ComplexNum _determinant(Matrix matrix) {
+        if (matrix.col == 1) {
+            return matrix.data[0][0];
+        } else if (matrix.col == 2) {
+            return complexNum.minus(complexNum.asterisk(data[0][0], data[1][1]),
+                    complexNum.asterisk(data[0][1], data[1][0]));
+        } else {
+            double res = 0.0;
+            for (int col = 0; col < matrix.col; ++col) {
+                Matrix sub = subMatrix(matrix, 1, col + 1);
+                res += (Math.pow(-1, 1 + col + 1) *
+                        matrix.data[0][col].re * _determinant(sub));
+            }
+
+            return res;
+        }
+    }
+
+    public Matrix inverse() {
+        ComplexNum det = determinant();
+
+        if (row != col || det == null) {
+            return null;
+        } else {
+            Matrix result = new Matrix(row, col);
+
+            for (int r = 0; r < row; ++r) {
+                for (int c = 0; c < col; ++c) {
+                    Matrix sub = subMatrix(this, r + 1, c + 1);
+                    complexNum.re = 1;
+                    complexNum.im = 0;
+
+                    result.data[c][r] = (det / det *
+                            Math.pow(-1, r + c) *
+                            _determinant(sub));
+                }
+            }
+
+            return result;
+        }
     }
 
     public void writeMatrix(int row, int col) {
@@ -140,110 +212,5 @@ public class Matrix {
             System.out.print("\n");
         }
         System.out.print("\n");
-    }
-
-    public void startMatrix() {
-        PrintWriter pw = new PrintWriter(System.out, true);
-        Scanner in = new Scanner(System.in);
-        int count1 = 0;
-        int count2 = 0;
-        int row1;
-        int row2;
-        int col1;
-        int col2;
-        while (true){
-            Scanner in3 = new Scanner(System.in);
-            pw.println("Enter the count of rows for the 1 matrix");
-            try{
-                row1 = in3.nextInt();
-            }
-            catch (InputMismatchException e){
-                pw.println("You enter another symbol. Please, try again");
-                continue;
-            }
-            break;
-        }
-        while (true){
-            Scanner in3 = new Scanner(System.in);
-            pw.println("Enter the count of columns for the 1 matrix");
-            try{
-                col1 = in3.nextInt();
-            }
-            catch (InputMismatchException e){
-                pw.println("You enter another symbol. Please, try again");
-                continue;
-            }
-            break;
-        }
-        while (true){
-            Scanner in3 = new Scanner(System.in);
-            pw.println("Enter the count of rows for the 2 matrix");
-            try{
-                row2 = in3.nextInt();
-            }
-            catch (InputMismatchException e){
-                pw.println("You enter another symbol. Please, try again");
-                continue;
-            }
-            break;
-        }
-        while (true){
-            Scanner in3 = new Scanner(System.in);
-            pw.println("Enter the count of columns for the 2 matrix");
-            try{
-                col2 = in3.nextInt();
-            }
-            catch (InputMismatchException e){
-                pw.println("You enter another symbol. Please, try again");
-                continue;
-            }
-            break;
-        }
-        int count_num1 = row1 * col1 * 2;
-        int count_num2 = row2 * col2 * 2;
-        pw.println("Size of the first matrix " + row1 + " " + col1);
-        pw.println("Size of the second matrix " + row2 + " " + col2);
-        pw.println();
-        pw.println("Now you need to fill the first matrix. Write 2 numbers for the real and" +
-                " imaginary parts, respectively. Write a number and a zero,\n" +
-                " if you want to work with real number (Example:2 0)");
-        pw.printf("You need to enter %d numbers for the first matrix", count_num1);
-        Matrix matrix1 = new Matrix(row1, col1);
-        matrix1.fillMatrix(row1, col1);
-        matrix1.writeMatrix(row1, col1);
-        pw.println("Now you need to fill the second matrix. Write 2 numbers for the real and" +
-                " imaginary parts, respectively. Write a number and a zero,\n" +
-                " if you want to work with real number (Example:2 0)");
-        pw.printf("You need to enter %d numbers for the second matrix", count_num2);
-        Matrix matrix2 = new Matrix(row2, col2);
-        matrix2.fillMatrix(row2, col2);
-        matrix2.writeMatrix(row2, col2);
-        pw.println("Enter what do you want to do with matrixes");
-        pw.println("1 - summary");
-        pw.println("2 - multiply");
-        pw.println("3 - matrix transposition");
-        pw.println("4 - matrix determinant");
-        int num;
-        while (((num = in.nextInt()) != 1) && (num != 2) && (num != 3) && (num != 4)) {
-            pw.println("You write another number, please, try again");
-        }
-        if (num == 1) {
-            Matrix matrix3 = new Matrix(row1, col1);
-            pw.println("Sum of two matrix");
-            sum(matrix1, matrix2, matrix3).writeMatrix(matrix3.row,matrix3.col);
-            }
-        if (num == 2) {
-            pw.println("Multiply of two matrix");
-            mult(matrix1, matrix2).writeMatrix(row1, col2);
-        }
-        if (num == 3) {
-            pw.println("Transpose of two matrix");
-            transpose(matrix1).writeMatrix(transpose(matrix1).row, transpose(matrix1).col);
-            transpose(matrix2).writeMatrix(transpose(matrix2).row, transpose(matrix2).col);
-        }
-        if (num == 4) {
-            pw.println("Determinant");
-          
-        }
     }
 }
